@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>S3 File Manager</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f7f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1, h2{
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .error {
+            background: #ffe6e6;
+            color: #b30000;
+            border: 1px solid #ff9999;
+        }
+        .success {
+            background: #e6ffe6;
+            color: #006600;
+            border: 1px solid #66cc66;
+        }
+
+        form {
+            margin: 0;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            width: 65%;
+            margin-right: 10px;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+        }
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: #f9f9f9;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        li:hover {
+            background: #eef6ff;
+        }
+
+        .bucket-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .Bucket_name > a{
+                text-decoration: none;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗂 Supabase Bucket Manager</h1>
+
+        {% if error %}
+            <div class="message error">❌ {{ error }}</div>
+        {% endif %}
+        {% if success %}
+            <div class="message success">✅ {{ success }}</div>
+        {% endif %}
+
+        <h2>Create New Bucket</h2>
+        <form action="/create-bucket" method="post">
+            <input type="text" name="bucket_name" placeholder="Enter bucket name" required>
+            <button type="submit">➕ Create</button>
+        </form>
+
+        <h2>Available Buckets</h2>
+        <ul>
+            {% for bucket in buckets %}
+                <li>
+                    <span class="Bucket_name"> 📦 <a href="/bucket/{{ bucket['name'] }}">{{ bucket['name'] }}</a></span>
+                    <div class="bucket-actions">
+                        <form action="/delete-bucket" method="post">
+                            <input type="hidden"  name="bucket_name" value="{{ bucket['name'] }}">
+                            <button type="submit" class="delete-btn">🗑 Delete</button>
+                        </form>
+                    </div>
+                </li>
+            {% else %}
+                <li>No buckets available.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
